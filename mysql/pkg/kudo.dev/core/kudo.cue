@@ -1,4 +1,4 @@
-package mysql
+package core
 
 service <Name>: {
 	apiVersion: "v1"
@@ -46,6 +46,13 @@ configMap <Name>: {
 	metadata name: Name
 }
 
+job <Name>: {
+	apiVersion: "batch/v1"
+	kind:       "Job"
+	_name:      Name
+	metadata name: Name
+}
+
 
 _spec: {
 	_name: string
@@ -87,7 +94,8 @@ objects: [ x for v in objectSets for x in v ]
 
 objectSets: [
     service,
-    deployment
+    deployment,
+	job
 ]
 
 plan <Name> phases: {
@@ -108,5 +116,15 @@ plan <Name> phases: {
 }
 	
 plan deploy: {}
-plan update: {}
-plan upgrade: {}
+//plan update: {}
+//plan upgrade: {}
+
+
+
+framework <Name>:{
+	plans deploy: plan.deploy
+	//plans update: plan.update
+	//plans upgrade: plan.upgrade
+}
+
+framework _base:{}

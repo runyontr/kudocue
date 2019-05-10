@@ -9,7 +9,7 @@ import (
 command ls: {
 	task print: cli.Print & {
 		text: tabwriter.Write([
-			"\(x.kind)  \t\(x.metadata.labels.component)  \t\(x.metadata.name)"
+			"\(x.kind)  \t\(x.metadata.name)"
 			for x in objects
 		])
 	}

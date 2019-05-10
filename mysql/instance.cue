@@ -1,5 +1,15 @@
-package mysql 
+package instance
 
-deployment mysql: {}
+import "kudo.dev/mysql"
 
-password: "kitchen"
+//instance: mysql.framework
+
+//instance: mysql
+
+
+instance framework database: mysql.framework & {
+    _password: "kitchen"
+    _name: "database"
+}
+
+
