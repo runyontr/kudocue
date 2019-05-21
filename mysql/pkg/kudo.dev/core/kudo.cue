@@ -1,5 +1,10 @@
 package core
 
+task <Name>:{
+
+}
+
+
 service <Name>: {
 	apiVersion: "v1"
 	kind:       "Service"
@@ -36,6 +41,7 @@ statefulSet <Name>: _spec & {
 }
 
 deployment <Name>: _spec & {
+	instance_name: *""|string
 	apiVersion: "extensions/v1beta1"
 	kind:       "Deployment"
 	_name:      Name
@@ -47,10 +53,11 @@ configMap <Name>: {
 }
 
 job <Name>: {
+	instance_name: *""|string
+	_name: Name
 	apiVersion: "batch/v1"
 	kind:       "Job"
-	_name:      Name
-	metadata name: Name
+	metadata name: _name
 }
 
 
@@ -118,6 +125,25 @@ plan <Name> phases: {
 plan deploy: {}
 //plan update: {}
 //plan upgrade: {}
+
+
+plan "\(k)": {
+	strategy: "parallel"
+	name: Name
+	phases: [{
+		strategy: "parallel"
+		name: Name
+		steps: [{
+			strategy: "parallel"
+			name: Name
+			tasks: [{
+				name: x.metadata.name
+				object: x
+			 } for x in framework.task."\(k)"]
+		}]
+	}]
+} for x in [task] for k, v in x
+
 
 
 

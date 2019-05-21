@@ -5,19 +5,19 @@ import "kudo.dev/core"
 _kudo: core
 
 //Update the default deployment to have a particular image/port
-_kudo deployment <Name> spec template spec containers: [{
-		image: "mysql:5.7"
-			ports: [{
-				containerPort: 3306
-				export: true
-			}]
+//_kudo deployment <Name> spec template spec containers: [{
+//		image: "mysql:5.7"
+//		ports: [{
+//			containerPort: 3306
+			export: true
+		}]
 	}]
 
 //Update default Jobs
 _kudo job <Name>: {
 	image: "mysql:5.7"
 	command: "create table"
-	env: framework._password
+	env: framework.password
 }
 
 _kudo job init: {}
@@ -28,13 +28,24 @@ _kudo deployment server: {}
 //Instance of a mysql framework
 framework: _kudo.framework._base & {
 	_name: string
-	_password: *"default" | string
+	password: *"default" | string
+
+	task deploy: [{
+		framework.objects.deployment.server,
+		framework.objects.job.init
+	}]
+	task backup:[{
+		framework.objects.job.backup,
+	}]
+	task restore: [{
+		framework.objects.job.restore,
+	}]
 	objects: {
 		deployment server: {
-			name: _name
+			instance_name: _name
 			env: {
 				name: "MYSQL_ROOT_PASSWORD"
-				value: _password
+				value: password
 			}
 		}
 		job init:{
@@ -52,8 +63,8 @@ framework: _kudo.framework._base & {
 	instance name: _name
 }
 
-
-
+default= framework
+{foobar: default }
 
 
 
